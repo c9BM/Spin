@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Quay Biển Số Xe</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    body {
+      background: linear-gradient(135deg, #1e3c72, #2a5298);
+      color: white;
+      min-height: 100vh;
+      padding: 20px;
+    }
+
+    .container {
+      max-width: 900px;
+      margin: 0 auto;
+      text-align: center;
+      padding: 20px;
+    }
+
+    h1 {
+      font-size: 2.5rem;
+      margin-bottom: 30px;
+      text-shadow: 0 2px 5px rgba(0,0,0,0.3);
+    }
+
+    .sections {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 30px;
+      justify-content: center;
+    }
+
+    .section {
+      background: rgba(255, 255, 255, 0.1);
+      padding: 25px;
+      border-radius: 15px;
+      backdrop-filter: blur(10px);
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+      width: 100%;
+      max-width: 400px;
+    }
+
+    .section h2 {
+      margin-bottom: 20px;
+      font-size: 1.6rem;
+      color: #ffd700;
+    }
+
+    .plate {
+      display: flex;
+      justify-content: center;
+      gap: 8px;
+      margin: 20px 0;
+      font-size: 2.5rem;
+      font-weight: bold;
+      letter-spacing: 5px;
+    }
+
+    .digit {
+      background: #000;
+      color: #fff;
+      width: 60px;
+      height: 80px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 10px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+      transition: all 0.1s;
+    }
+
+    .digit.rolling {
+      animation: roll 0.1s linear infinite;
+    }
+
+    @keyframes roll {
+      0% { transform: translateY(0); }
+      100% { transform: translateY(-20px); }
+    }
+
+    button {
+      margin-top: 20px;
+      padding: 12px 30px;
+      font-size: 1.1rem;
+      font-weight: bold;
+      color: #1e3c72;
+      background: #ffd700;
+      border: none;
+      border-radius: 50px;
+      cursor: pointer;
+      transition: all 0.3s;
+      box-shadow: 0 4px 15px rgba(255, 215, 0, 0.4);
+    }
+
+    button:hover {
+      background: #ffed4e;
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(255, 215, 0, 0.6);
+    }
+
+    button:active {
+      transform: translateY(0);
+    }
+
+    @media (max-width: 600px) {
+      .plate { font-size: 2rem; }
+      .digit { width: 50px; height: 65px; }
+      h1 { font-size: 2rem; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <h1>🎰 Quay Biển Số Xe May Mắn</h1>
+
+    <div class="sections">
+      <!-- Phần 4 số -->
+      <div class="section">
+        <h2>🔢 Biển 4 Số</h2>
+        <div class="plate" id="plate4">
+          <div class="digit">0</div>
+          <div class="digit">0</div>
+          <div class="digit">0</div>
+          <div class="digit">0</div>
+        </div>
+        <button onclick="spin(4)">QUAY NGAY</button>
+      </div>
+
+      <!-- Phần 5 số -->
+      <div class="section">
+        <h2>🔢 Biển 5 Số</h2>
+        <div class="plate" id="plate5">
+          <div class="digit">0</div>
+          <div class="digit">0</div>
+          <div class="digit">0</div>
+          <div class="digit">0</div>
+          <div class="digit">0</div>
+        </div>
+        <button onclick="spin(5)">QUAY NGAY</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    function getRandomDigit() {
+      return Math.floor(Math.random() * 10);
+    }
+
+    function spin(digits) {
+      const plateId = `plate${digits}`;
+      const plate = document.getElementById(plateId);
+      const digitElements = plate.querySelectorAll('.digit');
+
+      // Hiệu ứng quay
+      let rolls = 0;
+      const maxRolls = 15 + Math.floor(Math.random() * 10); // 15-25 lần
+      const interval = setInterval(() => {
+        digitElements.forEach(d => {
+          d.textContent = getRandomDigit();
+          d.classList.add('rolling');
+        });
+        rolls++;
+        if (rolls >= maxRolls) {
+          clearInterval(interval);
+          // Dừng với kết quả cuối
+          const finalNumber = '';
+          let result = '';
+          for (let i = 0; i < digits; i++) {
+            const num = getRandomDigit();
+            digitElements[i].textContent = num;
+            digitElements[i].classList.remove('rolling');
+            result += num;
+          }
+          setTimeout(() => {
+            alert(`🎉 Biển số ${digits} số: ${result}`);
+          }, 300);
+        }
+      }, 80);
+    }
+  </script>
+
+</body>
+</html>

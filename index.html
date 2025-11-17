@@ -5,117 +5,22 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Quay Biển Số Xe</title>
   <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    }
-
-    body {
-      background: linear-gradient(135deg, #1e3c72, #2a5298);
-      color: white;
-      min-height: 100vh;
-      padding: 20px;
-    }
-
-    .container {
-      max-width: 900px;
-      margin: 0 auto;
-      text-align: center;
-      padding: 20px;
-    }
-
-    h1 {
-      font-size: 2.5rem;
-      margin-bottom: 30px;
-      text-shadow: 0 2px 5px rgba(0,0,0,0.3);
-    }
-
-    .sections {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 30px;
-      justify-content: center;
-    }
-
-    .section {
-      background: rgba(255, 255, 255, 0.1);
-      padding: 25px;
-      border-radius: 15px;
-      backdrop-filter: blur(10px);
-      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
-      width: 100%;
-      max-width: 400px;
-    }
-
-    .section h2 {
-      margin-bottom: 20px;
-      font-size: 1.6rem;
-      color: #ffd700;
-    }
-
-    .plate {
-      display: flex;
-      justify-content: center;
-      gap: 8px;
-      margin: 20px 0;
-      font-size: 2.5rem;
-      font-weight: bold;
-      letter-spacing: 5px;
-    }
-
-    .digit {
-      background: #000;
-      color: #fff;
-      width: 60px;
-      height: 80px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      border-radius: 10px;
-      box-shadow: 0 4px 10px rgba(0,0,0,0.3);
-      transition: all 0.1s;
-    }
-
-    .digit.rolling {
-      animation: roll 0.1s linear infinite;
-    }
-
-    @keyframes roll {
-      0% { transform: translateY(0); }
-      100% { transform: translateY(-20px); }
-    }
-
-    button {
-      margin-top: 20px;
-      padding: 12px 30px;
-      font-size: 1.1rem;
-      font-weight: bold;
-      color: #1e3c72;
-      background: #ffd700;
-      border: none;
-      border-radius: 50px;
-      cursor: pointer;
-      transition: all 0.3s;
-      box-shadow: 0 4px 15px rgba(255, 215, 0, 0.4);
-    }
-
-    button:hover {
-      background: #ffed4e;
-      transform: translateY(-2px);
-      box-shadow: 0 6px 20px rgba(255, 215, 0, 0.6);
-    }
-
-    button:active {
-      transform: translateY(0);
-    }
-
-    @media (max-width: 600px) {
-      .plate { font-size: 2rem; }
-      .digit { width: 50px; height: 65px; }
-      h1 { font-size: 2rem; }
-    }
+    * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+    body { background: linear-gradient(135deg, #1e3c72, #2a5298); color: white; min-height: 100vh; padding: 20px; }
+    .container { max-width: 900px; margin: 0 auto; text-align: center; padding: 20px; }
+    h1 { font-size: 2.5rem; margin-bottom: 30px; text-shadow: 0 2px 5px rgba(0,0,0,0.3); }
+    .sections { display: flex; flex-wrap: wrap; gap: 30px; justify-content: center; }
+    .section { background: rgba(255, 255, 255, 0.1); padding: 25px; border-radius: 15px; backdrop-filter: blur(10px); box-shadow: 0 8px 32px rgba(0,0,0,0.2); width: 100%; max-width: 400px; }
+    .section h2 { margin-bottom: 20px; font-size: 1.6rem; color: #ffd700; }
+    .plate { display: flex; justify-content: center; gap: 8px; margin: 20px 0; font-size: 2.5rem; font-weight: bold; letter-spacing: 5px; }
+    .digit { background: #000; color: #fff; width: 60px; height: 80px; display: flex; align-items: center; justify-content: center; border-radius: 10px; box-shadow: 0 4px 10px rgba(0,0,0,0.3); transition: all 0.1s; }
+    .digit.rolling { animation: roll 0.1s linear infinite; }
+    @keyframes roll { 0% { transform: translateY(0); } 100% { transform: translateY(-20px); } }
+    button { margin-top: 20px; padding: 12px 30px; font-size: 1.1rem; font-weight: bold; color: #1e3c72; background: #ffd700; border: none; border-radius: 50px; cursor: pointer; transition: all 0.3s; box-shadow: 0 4px 15px rgba(255, 215, 0, 0.4); }
+    button:hover { background: #ffed4e; transform: translateY(-2px); box-shadow: 0 6px 20px rgba(255, 215, 0, 0.6); }
+    button:active { transform: translateY(0); }
+    .status { margin-top: 10px; font-size: 0.9rem; opacity: 0.8; }
+    @media (max-width: 600px) { .plate { font-size: 2rem; } .digit { width: 50px; height: 65px; } h1 { font-size: 2rem; } }
   </style>
 </head>
 <body>
@@ -128,42 +33,97 @@
       <div class="section">
         <h2>🔢 Biển 4 Số</h2>
         <div class="plate" id="plate4">
-          <div class="digit">0</div>
-          <div class="digit">0</div>
-          <div class="digit">0</div>
-          <div class="digit">0</div>
+          <div class="digit">0</div><div class="digit">0</div><div class="digit">0</div><div class="digit">0</div>
         </div>
         <button onclick="spin(4)">QUAY NGAY</button>
+        <div class="status" id="status4"></div>
       </div>
 
       <!-- Phần 5 số -->
       <div class="section">
         <h2>🔢 Biển 5 Số</h2>
         <div class="plate" id="plate5">
-          <div class="digit">0</div>
-          <div class="digit">0</div>
-          <div class="digit">0</div>
-          <div class="digit">0</div>
-          <div class="digit">0</div>
+          <div class="digit">0</div><div class="digit">0</div><div class="digit">0</div><div class="digit">0</div><div class="digit">0</div>
         </div>
         <button onclick="spin(5)">QUAY NGAY</button>
+        <div class="status" id="status5"></div>
       </div>
     </div>
   </div>
 
+  <!-- Firebase SDK -->
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
+
   <script>
+    // Khởi tạo Firebase
+    const firebaseConfig = {
+      databaseURL: "https://unityvina-1fc51-default-rtdb.asia-southeast1.firebasedatabase.app"
+    };
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.database();
+    const user = "@giang20166";
+
+    // Hàm lưu dữ liệu với kiểm tra trùng lặp
+    async function saveResult(type, bienSo) {
+      const typeKey = type === 4 ? '4so' : '5so';
+      const statusId = type === 4 ? 'status4' : 'status5';
+      const statusEl = document.getElementById(statusId);
+
+      try {
+        // Kiểm tra trùng lặp: user + type + bienSo
+        const snapshot = await db.ref('quay_bien_so')
+          .orderByChild('user')
+          .equalTo(user)
+          .once('value');
+
+        let isDuplicate = false;
+        snapshot.forEach(child => {
+          const data = child.val();
+          if (data.type === typeKey && data.bienSo === bienSo) {
+            isDuplicate = true;
+          }
+        });
+
+        if (isDuplicate) {
+          statusEl.textContent = `⚠️ Biển số ${bienSo} đã tồn tại!`;
+          statusEl.style.color = '#ff6b6b';
+          setTimeout(() => { statusEl.textContent = ''; }, 3000);
+          return;
+        }
+
+        // Nếu không trùng → lưu mới
+        const thoiGian = new Date().toISOString();
+        await db.ref('quay_bien_so').push({
+          user: user,
+          type: typeKey,
+          bienSo: bienSo,
+          thoiGian: thoiGian
+        });
+
+        statusEl.textContent = `✅ Đã lưu: ${bienSo}`;
+        statusEl.style.color = '#90ee90';
+        setTimeout(() => { statusEl.textContent = ''; }, 3000);
+
+      } catch (error) {
+        console.error("Lỗi lưu dữ liệu:", error);
+        alert("Lỗi lưu dữ liệu: " + error.message);
+      }
+    }
+
+    // Hàm random số
     function getRandomDigit() {
       return Math.floor(Math.random() * 10);
     }
 
+    // Hàm quay
     function spin(digits) {
       const plateId = `plate${digits}`;
       const plate = document.getElementById(plateId);
       const digitElements = plate.querySelectorAll('.digit');
 
-      // Hiệu ứng quay
       let rolls = 0;
-      const maxRolls = 15 + Math.floor(Math.random() * 10); // 15-25 lần
+      const maxRolls = 15 + Math.floor(Math.random() * 10);
       const interval = setInterval(() => {
         digitElements.forEach(d => {
           d.textContent = getRandomDigit();
@@ -172,8 +132,6 @@
         rolls++;
         if (rolls >= maxRolls) {
           clearInterval(interval);
-          // Dừng với kết quả cuối
-          const finalNumber = '';
           let result = '';
           for (let i = 0; i < digits; i++) {
             const num = getRandomDigit();
@@ -181,8 +139,11 @@
             digitElements[i].classList.remove('rolling');
             result += num;
           }
-          setTimeout(() => {
-            alert(`🎉 Biển số ${digits} số: ${result}`);
+
+          // Hiển thị alert và lưu (nếu không trùng)
+          setTimeout(async () => {
+            alert(`Biển số ${digits} số: ${result}`);
+            await saveResult(digits, result);
           }, 300);
         }
       }, 80);

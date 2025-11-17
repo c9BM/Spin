@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Kết Quả Quay Biển Số - @giang20166</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+    body { background: linear-gradient(135deg, #0f2027, #203a43, #2c5364); color: #fff; min-height: 100vh; padding: 20px; }
+    .container { max-width: 1000px; margin: 0 auto; }
+    h1 { text-align: center; font-size: 2.3rem; margin: 20px 0 30px; color: #ffd700; text-shadow: 0 2px 10px rgba(255,215,0,0.3); }
+    .stats { display: flex; justify-content: center; gap: 20px; flex-wrap: wrap; margin-bottom: 30px; }
+    .stat-card { background: rgba(255,255,255,0.1); padding: 15px 25px; border-radius: 12px; backdrop-filter: blur(10px); box-shadow: 0 8px 25px rgba(0,0,0,0.2); text-align: center; min-width: 120px; }
+    .stat-card h3 { font-size: 0.9rem; opacity: 0.8; margin-bottom: 5px; }
+    .stat-card p { font-size: 1.5rem; font-weight: bold; color: #ffd700; }
+
+    .tabs { display: flex; justify-content: center; gap: 10px; margin-bottom: 20px; flex-wrap: wrap; }
+    .tab { padding: 10px 20px; background: rgba(255,255,255,0.1); border-radius: 50px; cursor: pointer; transition: all 0.3s; }
+    .tab.active { background: #ffd700; color: #1e3c72; font-weight: bold; }
+
+    .table-container { background: rgba(255,255,255,0.05); border-radius: 15px; padding: 20px; backdrop-filter: blur(10px); box-shadow: 0 8px 32px rgba(0,0,0,0.2); overflow-x: auto; }
+    table { width: 100%; border-collapse: collapse; }
+    th, td { padding: 12px 15px; text-align: center; border-bottom: 1px solid rgba(255,255,255,0.1); }
+    th { background: rgba(255,215,0,0.2); color: #ffd700; font-weight: 600; }
+    tr:hover { background: rgba(255,255,255,0.05); }
+    .bien-so { font-family: monospace; font-size: 1.4rem; font-weight: bold; letter-spacing: 3px; }
+    .type-4 { color: #4ade80; }
+    .type-5 { color: #60a5fa; }
+    .time { font-size: 0.85rem; opacity: 0.7; }
+
+    .empty { text-align: center; padding: 40px; font-size: 1.1rem; opacity: 0.7; }
+    .loading { text-align: center; padding: 40px; color: #ffd700; }
+
+    @media (max-width: 600px) {
+      h1 { font-size: 1.8rem; }
+      .stat-card p { font-size: 1.3rem; }
+      .bien-so { font-size: 1.2rem; }
+      th, td { padding: 8px; font-size: 0.9rem; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <h1>📋 Kết Quả Quay Biển Số - @giang20166</h1>
+
+    <div class="stats">
+      <div class="stat-card">
+        <h3>Tổng lượt quay</h3>
+        <p id="total">0</p>
+      </div>
+      <div class="stat-card">
+        <h3>Biển 4 số</h3>
+        <p id="count4">0</p>
+      </div>
+      <div class="stat-card">
+        <h3>Biển 5 số</h3>
+        <p id="count5">0</p>
+      </div>
+    </div>
+
+    <div class="tabs">
+      <div class="tab active" data-type="all">Tất cả</div>
+      <div class="tab" data-type="4so">4 Số</div>
+      <div class="tab" data-type="5so">5 Số</div>
+    </div>
+
+    <div class="table-container">
+      <div id="loading" class="loading">Đang tải dữ liệu...</div>
+      <div id="empty" class="empty" style="display:none;">Chưa có dữ liệu nào.</div>
+      <table id="resultsTable" style="display:none;">
+        <thead>
+          <tr>
+            <th>STT</th>
+            <th>Biển số</th>
+            <th>Loại</th>
+            <th>Thời gian</th>
+          </tr>
+        </thead>
+        <tbody id="resultsBody"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- Firebase SDK -->
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
+
+  <script>
+    // Khởi tạo Firebase
+    const firebaseConfig = {
+      databaseURL: "https://unityvina-1fc51-default-rtdb.asia-southeast1.firebasedatabase.app"
+    };
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.database();
+    const user = "@giang20166";
+
+    // DOM Elements
+    const resultsBody = document.getElementById('resultsBody');
+    const resultsTable = document.getElementById('resultsTable');
+    const loading = document.getElementById('loading');
+    const empty = document.getElementById('empty');
+    const totalEl = document.getElementById('total');
+    const count4El = document.getElementById('count4');
+    const count5El = document.getElementById('count5');
+    const tabs = document.querySelectorAll('.tab');
+
+    let allData = [];
+    let filteredData = [];
+
+    // Lọc dữ liệu theo tab
+    tabs.forEach(tab => {
+      tab.addEventListener('click', () => {
+        tabs.forEach(t => t.classList.remove('active'));
+        tab.classList.add('active');
+        const type = tab.getAttribute('data-type');
+        filterData(type);
+      });
+    });
+
+    function filterData(type) {
+      if (type === 'all') {
+        filteredData = allData;
+      } else {
+        filteredData = allData.filter(item => item.type === type);
+      }
+      renderTable(filteredData);
+    }
+
+    // Hiển thị bảng
+    function renderTable(data) {
+      resultsBody.innerHTML = '';
+      if (data.length === 0) {
+        resultsTable.style.display = 'none';
+        empty.style.display = 'block';
+        return;
+      }
+
+      empty.style.display = 'none';
+      resultsTable.style.display = 'table';
+
+      data.forEach((item, index) => {
+        const row = document.createElement('tr');
+        const bienSoClass = item.type === '4so' ? 'bien-so type-4' : 'bien-so type-5';
+        const loai = item.type === '4so' ? '4 số' : '5 số';
+        const time = new Date(item.thoiGian).toLocaleString('vi-VN');
+
+        row.innerHTML = `
+          <td>${index + 1}</td>
+          <td class="${bienSoClass}">${item.bienSo}</td>
+          <td>${loai}</td>
+          <td class="time">${time}</td>
+        `;
+        resultsBody.appendChild(row);
+      });
+    }
+
+    // Lấy dữ liệu từ Firebase (chỉ của @giang20166)
+    db.ref('quay_bien_so')
+      .orderByChild('user')
+      .equalTo(user)
+      .on('value', (snapshot) => {
+        allData = [];
+        let count4 = 0, count5 = 0;
+
+        snapshot.forEach(child => {
+          const data = child.val();
+          allData.push(data);
+          if (data.type === '4so') count4++;
+          if (data.type === '5so') count5++;
+        });
+
+        // Sắp xếp mới nhất trước
+        allData.sort((a, b) => new Date(b.thoiGian) - new Date(a.thoiGian));
+
+        // Cập nhật thống kê
+        totalEl.textContent = allData.length;
+        count4El.textContent = count4;
+        count5El.textContent = count5;
+
+        // Ẩn loading
+        loading.style.display = 'none';
+
+        // Lọc theo tab hiện tại
+        const activeTab = document.querySelector('.tab.active').getAttribute('data-type');
+        filterData(activeTab);
+      }, (error) => {
+        loading.textContent = "Lỗi tải dữ liệu: " + error.message;
+        console.error(error);
+      });
+  </script>
+
+</body>
+</html>
